@@ -23,7 +23,7 @@ const draw = () => {
   // 渲染
   for (const obj of props.objects) {
     try {
-      mainContext.value.drawImage(obj.img, obj.x, obj.y, obj.w, obj.h)
+      mainContext.value.drawImage(obj.img, Math.floor(obj.x), Math.floor(obj.y), obj.w, obj.h)
     } catch (e) {
       console.error(e, obj)
     }

@@ -34,27 +34,29 @@ const mainFrameClass = computed(() => ({
 logStore.score = 0
 // 玩家相关信息
 const playerMaxBlood = ref(25)
-const playerBullet = ref({
+const playerBullet = {
   defaultW: 10,
   defaultH: 15,
   defaultSpeedX: 0,
   defaultSpeedY: -12,
-})
+}
 const fps = useFps()
 // 敌机相关信息
-const enemyDefaultW = 50
-const enemyDefaultH = 60
-const enemyBlood = ref(8)
-const enemyDamage = ref(1)
-const enemyMaxCount = ref(5)
-const enemyMaxSpeedX = ref(3)
-const enemyMaxSpeedY = ref(3)
-const enemyBullet = ref({
+const enemyInfo = {
+  enemyDefaultW: 50,
+  enemyDefaultH: 60,
+  enemyBlood: 8,
+  enemyDamage: 1,
+  enemyMaxCount: 5,
+  enemyMaxSpeedX: 3,
+  enemyMaxSpeedY: 3,
+}
+const enemyBullet = {
   defaultW: 12,
   defaultH: 18,
   defaultSpeedX: 0,
   defaultSpeedY: 4,
-})
+}
 
 /** 监听玩家分数，提高难度 */
 watch(() => logStore.score, (newValue, oldValue) => {
@@ -68,12 +70,12 @@ watch(() => logStore.score, (newValue, oldValue) => {
     if (playerMaxBlood.value >= newBlood) {
       player.blood = newBlood
     }
-    enemyMaxCount.value += 10
-    enemyBlood.value += 1
-    enemyDamage.value += 1
-    enemyMaxSpeedX.value += 0.5
-    enemyMaxSpeedY.value += 0.5
-    enemyBullet.value.defaultSpeedY += 0.5
+    enemyInfo.enemyMaxCount += 10
+    enemyInfo.enemyBlood += 1
+    enemyInfo.enemyDamage += 1
+    enemyInfo.enemyMaxSpeedX += 0.5
+    enemyInfo.enemyMaxSpeedY += 0.5
+    enemyBullet.defaultSpeedY += 0.5
     gameAudio.lvUp()
   }
 })
@@ -108,38 +110,38 @@ const {
   resume: resumeGenerateEnemy,
 } = useIntervalFn(() => {
   // 限制敌机数量
-  if (enemies.length >= enemyMaxCount.value) return
+  if (enemies.length >= enemyInfo.enemyMaxCount) return
   // 随机获取生成模式,这里为3个模式
   const mode = Math.floor(Math.random() * 3)
   if (mode === 1) { // 敌机从屏幕左侧进入
     enemies.push(new MovableGameObject(
       bitmapStore.bitmaps[2],
-      -enemyDefaultW, Math.random() * (100 - enemyDefaultH),
-      enemyDefaultW, enemyDefaultH,
-      Math.ceil(Math.random() * enemyMaxSpeedX.value),
-      Math.ceil(Math.random() * enemyMaxSpeedY.value),
-      enemyBlood.value,
-      enemyDamage.value,
+      -enemyInfo.enemyDefaultW, Math.random() * (100 - enemyInfo.enemyDefaultH),
+      enemyInfo.enemyDefaultW, enemyInfo.enemyDefaultH,
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedX),
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY),
+      enemyInfo.enemyBlood,
+      enemyInfo.enemyDamage,
     ))
   } else if (mode === 2) { // 敌机从屏幕右侧进入
     enemies.push(new MovableGameObject(
       bitmapStore.bitmaps[2],
-      globalWidth.value + enemyDefaultW, Math.random() * (100 - enemyDefaultH),
-      enemyDefaultW, enemyDefaultH,
-      -Math.ceil(Math.random() * enemyMaxSpeedX.value),
-      Math.ceil(Math.random() * enemyMaxSpeedY.value),
-      enemyBlood.value,
-      enemyDamage.value,
+      globalWidth.value + enemyInfo.enemyDefaultW, Math.random() * (100 - enemyInfo.enemyDefaultH),
+      enemyInfo.enemyDefaultW, enemyInfo.enemyDefaultH,
+      -Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedX),
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY),
+      enemyInfo.enemyBlood,
+      enemyInfo.enemyDamage,
     ))
   } else { //敌机从屏幕上方进入
     enemies.push(new MovableGameObject(
       bitmapStore.bitmaps[2],
-      Math.random() * (globalWidth.value - enemyDefaultW), -enemyDefaultH,
-      enemyDefaultW, enemyDefaultH,
+      Math.random() * (globalWidth.value - enemyInfo.enemyDefaultW), -enemyInfo.enemyDefaultH,
+      enemyInfo.enemyDefaultW, enemyInfo.enemyDefaultH,
       0,
-      Math.ceil(Math.random() * enemyMaxSpeedY.value + 1),
-      enemyBlood.value,
-      enemyDamage.value,
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY + 1),
+      enemyInfo.enemyBlood,
+      enemyInfo.enemyDamage,
     ))
   }
 }, 120, {immediate: true})
@@ -158,29 +160,32 @@ const playerSkillLogo = (code) => {
 const {
   resume: resumePlayerFire,
 } = useIntervalFn(() => {
-  const bw = playerBullet.value.defaultW
-  const bh = playerBullet.value.defaultH
+  const bw = playerBullet.defaultW
+  const bh = playerBullet.defaultH
+  const sx = playerBullet.defaultSpeedX
+  const sy = playerBullet.defaultSpeedY
+  const {x, y, w, damage} = player
   playerBullets.push(
     new MovableGameObject(
       bitmapStore.bitmaps[1],
-      player.x + player.w / 2 - bw / 2, player.y,
+      x + w / 2 - bw / 2, y,
       bw, bh,
-      0, playerBullet.value.defaultSpeedY,
-      1, player.damage,
+      0, sy,
+      1, damage,
     ),
     new MovableGameObject(
       bitmapStore.bitmaps[1],
-      player.x + bw, player.y + bh,
+      x + bw, y + bh,
       bw, bh,
-      -playerBullet.value.defaultSpeedX, playerBullet.value.defaultSpeedY,
-      1, player.damage,
+      -sx, sy,
+      1, damage,
     ),
     new MovableGameObject(
       bitmapStore.bitmaps[1],
-      player.x + player.w - bw * 2, player.y + bh,
+      x + w - bw * 2, y + bh,
       bw, bh,
-      playerBullet.value.defaultSpeedX, playerBullet.value.defaultSpeedY,
-      1, player.damage,
+      sx, sy,
+      1, damage,
     ),
   )
   gameAudio.bullet()
@@ -223,11 +228,11 @@ const {
     if (Math.random() < 0.9) continue
     enemyBullets.push(new MovableGameObject(
       bitmapStore.bitmaps[3],
-      e.x + (e.w - enemyBullet.value.defaultW) / 2, e.y + e.h,
-      enemyBullet.value.defaultW, enemyBullet.value.defaultH,
-      enemyBullet.value.defaultSpeedX,
+      e.x + (e.w - enemyBullet.defaultW) / 2, e.y + e.h,
+      enemyBullet.defaultW, enemyBullet.defaultH,
+      enemyBullet.defaultSpeedX,
       e.speedY < 3
-        ? enemyBullet.value.defaultSpeedY
+        ? enemyBullet.defaultSpeedY
         : e.speedY,
       1, e.damage,
     ))
@@ -346,21 +351,21 @@ const playerSkill = reactive([
     effect: () => {
       //狂暴,提升攻击力，提高子弹发射速度，子弹散射，开启狂暴后其他技能有所提升
       gameAudio.playerSkill1()
-      const oldSpeedX = playerBullet.value.defaultSpeedX
+      const oldSpeedX = playerBullet.defaultSpeedX
       const oldDamage = player.damage
-      const oldW = playerBullet.value.defaultW
-      const oldH = playerBullet.value.defaultH
+      const oldW = playerBullet.defaultW
+      const oldH = playerBullet.defaultH
       player.damage *= 2
-      playerBullet.value.defaultSpeedX += 2
-      playerBullet.value.defaultW *= 1.5
-      playerBullet.value.defaultH *= 1.5
+      playerBullet.defaultSpeedX += 2
+      playerBullet.defaultW *= 1.5
+      playerBullet.defaultH *= 1.5
       playerSkill[1].releasing = true
       playerSkill[1].nowCD = playerSkill[1].defaultCD
       setTimeout(() => {
-        playerBullet.value.defaultSpeedX = oldSpeedX
+        playerBullet.defaultSpeedX = oldSpeedX
         player.damage = oldDamage
-        playerBullet.value.defaultW = oldW
-        playerBullet.value.defaultH = oldH
+        playerBullet.defaultW = oldW
+        playerBullet.defaultH = oldH
         playerSkill[1].releasing = false
       }, playerSkill[1].duration)
     },
@@ -392,30 +397,27 @@ const playerSkill = reactive([
   {
     name: '散射',
     duration: 1000,
-    defaultCD: 10000,
+    defaultCD: 8000,
     nowCD: 0,
     releasing: false,
     key: 'Q',
     effect: () => {
       //圆形散射
       gameAudio.playerSkill3()
-      const bw = playerBullet.value.defaultW
-      const bh = playerBullet.value.defaultH
-      const time = playerSkill[1].releasing === true ? 50 : 100
+      const bw = playerBullet.defaultW
+      const bh = playerBullet.defaultH
+      const time = playerSkill[1].releasing === true ? 75 : 100
       let i = 0
       const len = circlePoints.length
       const it = setInterval(() => {
-        for (const {x, y} of circlePoints[i]) {
-          playerBullets.push(new MovableGameObject(
-            bitmapStore.bitmaps[1],
-            player.x + (player.w - bw) / 2, player.y,
-            bw, bh, x, y,
-            1, player.damage,
-          ))
-        }
-        gameAudio.bullet()
+        playerBullets.push(...circlePoints[i].map(({x, y}) => new MovableGameObject(
+          bitmapStore.bitmaps[1],
+          player.x + (player.w - bw) / 2, player.y,
+          bw, bh, x, y,
+          1, player.damage,
+        )))
         const nextI = i + 1
-        i = nextI > len ? 0 : nextI
+        i = nextI === len ? 0 : nextI
       }, time)
       playerSkill[3].releasing = true
       playerSkill[3].nowCD = playerSkill[3].defaultCD
@@ -542,6 +544,7 @@ onMounted(() => {
   margin: 0 auto;
   overflow: hidden;
   position: relative;
+  will-change: transform, filter;
   transition: all 0.3s;
 
   .fps {
@@ -570,11 +573,11 @@ onMounted(() => {
   }
 
   &.hurt {
-    filter: hue-rotate(-30deg) blur(2px) brightness(90%);
+    filter: hue-rotate(-30deg) blur(1px);
   }
 
   &.skill-1 {
-    filter: contrast(200%);
+    filter: contrast(150%);
   }
 
   &.skill-0 {

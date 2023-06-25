@@ -51,8 +51,6 @@ const start = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: url(/img/bg_welcome.webp) no-repeat center;
-  background-size: cover;
 
   .start-title {
     font-size: 48px;
@@ -60,16 +58,18 @@ const start = async () => {
   }
 
   .start-btn {
-    margin: 40px;
+    margin: 30px;
     border: none;
     padding: 10px 15px;
     font-size: 28px;
     color: #333;
     cursor: pointer;
     background: white;
+    border-radius: 6px;
   }
 
   .introduction {
+    padding: 1em;
     margin: 0 auto;
     list-style: none;
   }

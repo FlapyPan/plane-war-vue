@@ -28,8 +28,6 @@ const restart = () => location.reload()
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: url(/img/bg_welcome.webp) no-repeat center;
-  background-size: cover;
 
   .end-title {
     font-size: 48px;
@@ -43,6 +41,7 @@ const restart = () => location.reload()
     font-size: 28px;
     color: #333;
     cursor: pointer;
+    border-radius: 6px;
   }
 
   .link {
