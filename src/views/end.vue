@@ -28,7 +28,7 @@ const restart = () => location.reload()
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: url(/img/img_bg_logo.jpg) no-repeat center;
+  background: url(/img/bg_welcome.webp) no-repeat center;
   background-size: cover;
 
   .end-title {

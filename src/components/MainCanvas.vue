@@ -12,7 +12,7 @@ const mainCanvas = ref(null)
 const mainContext = computed(() => mainCanvas.value.getContext('2d'))
 
 const bg = new Image()
-bg.src = '/img/img_bg_level_3.jpg'
+bg.src = '/img/bg_level.webp'
 let bg1y = -props.height
 let bg2y = 0
 

@@ -35,7 +35,7 @@ const start = async () => {
       <li>手机玩家：直接拖动飞机操控</li>
       <li>Q 散射：发射几圈环形子弹清除周围的敌人（狂暴效果：增强发射速度）</li>
       <li>W 治疗：持续治疗一段时间（狂暴效果：提高治疗量）</li>
-      <li>E 狂暴：提高子弹伤害和射速，开启狂暴后开启其他技能有所加强</li>
+      <li>E 狂暴：提高子弹伤害和范围，开启狂暴后开启其他技能有所加强</li>
       <li>R 时停，暂停时间，期间免疫伤害（狂暴效果：清除所有敌机子弹）</li>
     </ul>
     <a class="link" href="https://github.com/FlapyPan/plane-war-vue">项目 Github 地址</a>
@@ -51,7 +51,7 @@ const start = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: url(/img/img_bg_logo.jpg) no-repeat center;
+  background: url(/img/bg_welcome.webp) no-repeat center;
   background-size: cover;
 
   .start-title {

@@ -3,14 +3,14 @@ import { ref } from 'vue'
 
 // 资源列表
 const bitmapSrc = [
-  '/img/plane3.png',
-  '/img/My_zidan.png',
-  '/img/eplane2.gif',
-  '/img/ebullet1.png',
+  '/img/plane.webp',
+  '/img/bullet.webp',
+  '/img/eplane.webp',
+  '/img/ebullet.webp',
 ]
 const animeBitmapSrc = Array.from(
   {length: 9},
-  (v, i) => `/img/blow/${i + 1}.png`,
+  (v, i) => `/img/blow/${i + 1}.webp`,
 )
 
 export const useBitmapStore = defineStore('bitmap', () => {
