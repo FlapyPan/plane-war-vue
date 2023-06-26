@@ -19,7 +19,8 @@ if (!logStore.loaded) {
 }
 
 const clickTarget = ref(null)
-const {width: _globalWidth, height: globalHeight} = useWindowSize()
+const {width: _globalWidth, height: _globalHeight} = useWindowSize()
+const globalHeight = computed(() => Math.min(_globalHeight.value, 714))
 const globalWidth = computed(() => Math.min(_globalWidth.value, globalHeight.value))
 
 /** @const 主窗口class */
@@ -510,11 +511,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="game-frame" :class="mainFrameClass" ref="clickTarget"
+  <div class="game-frame" :class="mainFrameClass"
        @click="isClickDown = !isClickDown"
        :style="`--globalWidth: ${globalWidth}px;--globalHeight: ${globalHeight}px;`"
   >
-    <MainCanvas class="game-canvas" :width="globalWidth" :height="globalHeight" :objects="objects" />
+    <MainCanvas ref="clickTarget" :width="globalWidth" :height="globalHeight" :objects="objects" />
     <p class="fps">fps: {{ fps }}</p>
     <p class="logger-info">{{ logStore.log }}</p>
     <div class="game-info">
@@ -537,15 +538,18 @@ onMounted(() => {
 
 <style scoped lang="postcss">
 .game-frame {
-  --globalWidth: 100vh;
-  --globalHeight: 100vh;
-  width: var(--globalWidth);
-  height: var(--globalHeight);
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
   overflow: hidden;
   position: relative;
   will-change: transform, filter;
   transition: all 0.3s;
+
+  canvas {
+    height: 100%;
+  }
 
   .fps {
     position: absolute;
@@ -584,10 +588,6 @@ onMounted(() => {
     filter: grayscale(50%) brightness(80%);
   }
 
-  .game-canvas {
-    position: absolute;
-  }
-
   .game-info {
     display: flex;
     align-items: center;
@@ -595,8 +595,10 @@ onMounted(() => {
     position: absolute;
     height: 50px;
     width: 100%;
+    max-width: 715px;
     bottom: 0;
-    left: 0;
+    left: auto;
+    right: auto;
 
     .player-info {
       flex: 1;
