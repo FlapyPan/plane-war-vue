@@ -42,6 +42,7 @@ const playerBullet = {
   defaultSpeedY: -12,
 }
 const fps = useFps()
+const tik = computed(() => 60 / fps.value)
 // 敌机相关信息
 const enemyInfo = {
   enemyDefaultW: 50,
@@ -119,8 +120,8 @@ const {
       bitmapStore.bitmaps[2],
       -enemyInfo.enemyDefaultW, Math.random() * (100 - enemyInfo.enemyDefaultH),
       enemyInfo.enemyDefaultW, enemyInfo.enemyDefaultH,
-      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedX),
-      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY),
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedX) * tik.value,
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY) * tik.value,
       enemyInfo.enemyBlood,
       enemyInfo.enemyDamage,
     ))
@@ -129,8 +130,8 @@ const {
       bitmapStore.bitmaps[2],
       globalWidth.value + enemyInfo.enemyDefaultW, Math.random() * (100 - enemyInfo.enemyDefaultH),
       enemyInfo.enemyDefaultW, enemyInfo.enemyDefaultH,
-      -Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedX),
-      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY),
+      -Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedX) * tik.value,
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY) * tik.value,
       enemyInfo.enemyBlood,
       enemyInfo.enemyDamage,
     ))
@@ -140,7 +141,7 @@ const {
       Math.random() * (globalWidth.value - enemyInfo.enemyDefaultW), -enemyInfo.enemyDefaultH,
       enemyInfo.enemyDefaultW, enemyInfo.enemyDefaultH,
       0,
-      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY + 1),
+      Math.ceil(Math.random() * enemyInfo.enemyMaxSpeedY + 1) * tik.value,
       enemyInfo.enemyBlood,
       enemyInfo.enemyDamage,
     ))
@@ -171,21 +172,21 @@ const {
       bitmapStore.bitmaps[1],
       x + w / 2 - bw / 2, y,
       bw, bh,
-      0, sy,
+      0, sy * tik.value,
       1, damage,
     ),
     new MovableGameObject(
       bitmapStore.bitmaps[1],
       x + bw, y + bh,
       bw, bh,
-      -sx, sy,
+      -sx * tik.value, sy * tik.value,
       1, damage,
     ),
     new MovableGameObject(
       bitmapStore.bitmaps[1],
       x + w - bw * 2, y + bh,
       bw, bh,
-      sx, sy,
+      sx * tik.value, sy * tik.value,
       1, damage,
     ),
   )
@@ -215,7 +216,6 @@ const {
       })
       if (hitIndex < 0) continue
       b.collide(enemies[hitIndex])
-      blows.push(new AnimeGameObject(bitmapStore.blowBitmaps, b.x, b.y, b.w, b.h))
     }
   }
 }, {immediate: true})
@@ -231,10 +231,10 @@ const {
       bitmapStore.bitmaps[3],
       e.x + (e.w - enemyBullet.defaultW) / 2, e.y + e.h,
       enemyBullet.defaultW, enemyBullet.defaultH,
-      enemyBullet.defaultSpeedX,
+      enemyBullet.defaultSpeedX * tik.value,
       e.speedY < 3
-        ? enemyBullet.defaultSpeedY
-        : e.speedY,
+        ? enemyBullet.defaultSpeedY * tik.value
+        : e.speedY * tik.value,
       1, e.damage,
     ))
   }
@@ -414,7 +414,7 @@ const playerSkill = reactive([
         playerBullets.push(...circlePoints[i].map(({x, y}) => new MovableGameObject(
           bitmapStore.bitmaps[1],
           player.x + (player.w - bw) / 2, player.y,
-          bw, bh, x, y,
+          bw, bh, x * tik.value, y * tik.value,
           1, player.damage,
         )))
         const nextI = i + 1
@@ -516,8 +516,6 @@ onMounted(() => {
        :style="`--globalWidth: ${globalWidth}px;--globalHeight: ${globalHeight}px;`"
   >
     <MainCanvas ref="clickTarget" :width="globalWidth" :height="globalHeight" :objects="objects" />
-    <p class="fps">fps: {{ fps }}</p>
-    <p class="logger-info">{{ logStore.log }}</p>
     <div class="game-info">
       <div class="skill-info">
         <div v-for="(skill,i) in playerSkill" @touchstart="releasePlayerSkill(i)"
@@ -549,27 +547,6 @@ onMounted(() => {
 
   canvas {
     height: 100%;
-  }
-
-  .fps {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    color: #eee;
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  .logger-info {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    line-height: 30px;
-    color: #eee;
-    font-size: 12px;
   }
 
   &.treat .blood .g-progress {
