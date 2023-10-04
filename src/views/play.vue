@@ -506,7 +506,6 @@ watch(() => player.blood, (newValue, oldValue) => {
 
 onMounted(() => {
   gameAudio.bgm()
-  console.log(gameAudio)
   gameAudio.start()
 })
 

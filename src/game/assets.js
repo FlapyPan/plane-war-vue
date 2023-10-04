@@ -41,6 +41,6 @@ class AssetsMod {
 }
 
 export default [
-  new AssetsMod('aniki', '哲学♂效果包'),
-  new AssetsMod('aniki', '24号效果包'),
+  new AssetsMod('aniki', '哲学♂'),
+  new AssetsMod('24', '24号(仅BGM)'),
 ]

@@ -6,7 +6,7 @@ export default function () {
   const currentAssetsMod = useLocalStorage('assets-mod', { index: 0 })
   const audioSrc = assets[currentAssetsMod.value.index].audioSrc
   const bgm = new Audio(audioSrc.bgm)
-  bgm.volume = 0.5
+  bgm.volume = 0.6
   bgm.loop = true
   const start = new Audio(audioSrc.start)
   start.loop = false
