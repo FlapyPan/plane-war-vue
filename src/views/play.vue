@@ -19,7 +19,7 @@ if (!logStore.loaded) {
 }
 
 const clickTarget = ref(null)
-const {width: _globalWidth, height: _globalHeight} = useWindowSize()
+const { width: _globalWidth, height: _globalHeight } = useWindowSize()
 const globalHeight = computed(() => Math.min(_globalHeight.value, 714))
 const globalWidth = computed(() => Math.min(_globalWidth.value, globalHeight.value))
 
@@ -146,7 +146,7 @@ const {
       enemyInfo.enemyDamage,
     ))
   }
-}, 120, {immediate: true})
+}, 120, { immediate: true })
 
 /**@function 玩家技能冷却图标
  * @param {number} code 技能代号
@@ -166,7 +166,7 @@ const {
   const bh = playerBullet.defaultH
   const sx = playerBullet.defaultSpeedX
   const sy = playerBullet.defaultSpeedY
-  const {x, y, w, damage} = player
+  const { x, y, w, damage } = player
   playerBullets.push(
     new MovableGameObject(
       bitmapStore.bitmaps[1],
@@ -191,7 +191,7 @@ const {
     ),
   )
   gameAudio.bullet()
-}, 125, {immediate: true})
+}, 125, { immediate: true })
 
 // 计算玩家子弹碰撞
 const {
@@ -218,7 +218,7 @@ const {
       b.collide(enemies[hitIndex])
     }
   }
-}, {immediate: true})
+}, { immediate: true })
 
 /** 敌机开火 */
 const {
@@ -238,7 +238,7 @@ const {
       1, e.damage,
     ))
   }
-}, 200, {immediate: true})
+}, 200, { immediate: true })
 
 /**  计算敌机子弹碰撞 */
 const {
@@ -262,7 +262,7 @@ const {
       }
     }
   }
-}, {immediate: true})
+}, { immediate: true })
 
 /** 计算敌机碰撞 */
 const {
@@ -277,7 +277,7 @@ const {
       // 被击落加分
       logStore.score += 1
       i--
-      gameAudio.enemy3Down()
+      gameAudio.enemyDown()
     } else if (!e.move(globalWidth.value, globalHeight.value)) {
       enemies.splice(i, 1)
       i--
@@ -291,7 +291,7 @@ const {
       }
     }
   }
-}, {immediate: true})
+}, { immediate: true })
 
 /** 爆炸效果 */
 const {
@@ -305,7 +305,7 @@ const {
       i--
     }
   }
-}, {immediate: true})
+}, { immediate: true })
 
 
 // 玩家技能
@@ -411,7 +411,7 @@ const playerSkill = reactive([
       let i = 0
       const len = circlePoints.length
       const it = setInterval(() => {
-        playerBullets.push(...circlePoints[i].map(({x, y}) => new MovableGameObject(
+        playerBullets.push(...circlePoints[i].map(({ x, y }) => new MovableGameObject(
           bitmapStore.bitmaps[1],
           player.x + (player.w - bw) / 2, player.y,
           bw, bh, x * tik.value, y * tik.value,
@@ -448,7 +448,7 @@ const {
       playerSkill[i].nowCD -= 100
     }
   }
-}, 100, {immediate: true})
+}, 100, { immediate: true })
 
 // 快捷键绑定
 useEventListener(document, 'keypress', (event) => {
@@ -461,7 +461,7 @@ useEventListener(document, 'keypress', (event) => {
 // 处理鼠标和触摸事件
 let isClickDown = false
 let useTouch = false
-const {elementX, elementY, elementWidth, elementHeight, sourceType} = useMouseInElement(clickTarget)
+const { elementX, elementY, elementWidth, elementHeight, sourceType } = useMouseInElement(clickTarget)
 const touchSize = Math.max(player.w, player.h) * 1.5
 watch([elementX, elementY], ([x, y]) => {
   // 如果使用触摸，就把鼠标事件彻底禁用
@@ -506,6 +506,8 @@ watch(() => player.blood, (newValue, oldValue) => {
 
 onMounted(() => {
   gameAudio.bgm()
+  console.log(gameAudio)
+  gameAudio.start()
 })
 
 </script>

@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRafFn } from '@vueuse/core'
+import { useBitmapStore } from '@/stores/bitmap-store'
 
 const props = defineProps({
   objects: Array,
@@ -8,11 +9,15 @@ const props = defineProps({
   height: Number,
 })
 
+const bitmapStore = useBitmapStore()
+
 const mainCanvas = ref(null)
 const mainContext = computed(() => mainCanvas.value.getContext('2d'))
 
-const bg = new Image()
-bg.src = '/img/bg_level.webp'
+let bg = new Image()
+onMounted(() => {
+  bg.src = bitmapStore.bg
+})
 let bg1y = -props.height
 let bg2y = 0
 
@@ -34,7 +39,7 @@ const draw = () => {
   if (bg2y >= props.height) bg2y = -props.height
 }
 
-onMounted(() => useRafFn(draw, {immediate: true}))
+onMounted(() => useRafFn(draw, { immediate: true }))
 
 </script>
 

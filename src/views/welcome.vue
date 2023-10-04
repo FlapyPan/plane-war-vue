@@ -3,21 +3,21 @@ import { ref } from 'vue'
 import { useLogStore } from '@/stores/log-store'
 import { useBitmapStore } from '@/stores/bitmap-store'
 import router from '@/router'
-import startSound from '../assets/sounds/start.mp3'
+import assets from '@/game/assets'
+import { useLocalStorage } from '@vueuse/core'
 
 const logStore = useLogStore()
 const bitmapStore = useBitmapStore()
-const startAudio = new Audio(startSound)
-startAudio.volume = 0.5
 
+const currentAssetsMod = useLocalStorage('assets-mod', { index: 0 })
 const loading = ref(false)
 const start = async () => {
   loading.value = true
+  logStore.logger.info(`效果包：${assets[currentAssetsMod.value.index].info}`)
   logStore.logger.info('加载图片...')
   await bitmapStore.loadBitmaps()
   logStore.logger.info('所有资源加载完毕！')
   logStore.loaded = true
-  await startAudio.play()
   return router.push('/play')
 }
 
@@ -29,7 +29,15 @@ const start = async () => {
     <p>by FlapyPan</p>
     <p class="logger-info">{{ logStore.log }}</p>
     <div v-if="loading" class="start-btn">加载中...</div>
-    <button v-else class="start-btn" @click="start">进入游戏</button>
+    <template v-else>
+      <button class="start-btn" @click="start">进入游戏</button>
+      <label>
+        音效和图标包：
+        <select v-model="currentAssetsMod.index" name="currentAssetsMod">
+          <option v-for="({name,info},i) in assets" :key="name" :value="i">{{ info }}</option>
+        </select>
+      </label>
+    </template>
     <ul class="introduction">
       <li>电脑玩家：鼠标单击画面后操控飞机，再次单击解除控制</li>
       <li>手机玩家：直接拖动飞机操控</li>

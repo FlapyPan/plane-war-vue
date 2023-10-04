@@ -1,20 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-// 资源列表
-const bitmapSrc = [
-  '/img/plane.webp',
-  '/img/bullet.webp',
-  '/img/eplane.webp',
-  '/img/ebullet.webp',
-]
-const animeBitmapSrc = Array.from(
-  {length: 9},
-  (v, i) => `/img/blow/${i + 1}.webp`,
-)
+import assets from '@/game/assets'
+import { useLocalStorage } from '@vueuse/core'
 
 export const useBitmapStore = defineStore('bitmap', () => {
+  const currentAssetsMod = useLocalStorage('assets-mod', { index: 0 })
+
   let loaded = false
+
+  const bg = ref(null)
+
   /** @const 图片源(0为玩家, 1为玩家子弹, 2为敌机, 3为敌机子弹) */
   const bitmaps = ref([])
 
@@ -35,15 +30,12 @@ export const useBitmapStore = defineStore('bitmap', () => {
    *  */
   const loadBitmaps = async () => {
     if (loaded) return
-    bitmaps.value = await Promise.all(bitmapSrc.map(
-      (src) => loadBitmapFromUrl(src)),
-    )
-    blowBitmaps.value = await Promise.all(
-      animeBitmapSrc.map((src) => loadBitmapFromUrl(src)),
-    )
+    const bitmapSrc = assets[currentAssetsMod.value.index].bitmapSrc
+    bg.value = bitmapSrc.bg
+    bitmaps.value = await Promise.all(bitmapSrc.bitmaps.map((src) => loadBitmapFromUrl(src)))
+    blowBitmaps.value = await Promise.all(bitmapSrc.blowBitmaps.map((src) => loadBitmapFromUrl(src)))
     loaded = true
   }
 
-
-  return {bitmaps, blowBitmaps, loadBitmaps}
+  return { bg, bitmaps, blowBitmaps, loadBitmaps, currentAssetsMod }
 })
