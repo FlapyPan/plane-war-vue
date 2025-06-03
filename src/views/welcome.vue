@@ -26,7 +26,7 @@ const start = async () => {
 <template>
   <div class="start-frame">
     <h1 class="start-title">飞机大战</h1>
-    <p>by FlapyPan</p>
+    <p>by <a class="link" href="https://github.com/blyrin">blyrin</a></p>
     <p class="logger-info">{{ logStore.log }}</p>
     <div v-if="loading" class="start-btn">加载中...</div>
     <template v-else>
@@ -46,7 +46,7 @@ const start = async () => {
       <li>E 狂暴：提高子弹伤害和范围，开启狂暴后开启其他技能有所加强</li>
       <li>R 时停，暂停时间，期间免疫伤害（狂暴效果：清除所有敌机子弹）</li>
     </ul>
-    <a class="link" href="https://github.com/FlapyPan/plane-war-vue">项目 Github 地址</a>
+    <a class="link" href="https://github.com/blyrin/plane-war-vue">项目 Github 地址</a>
   </div>
 </template>
 

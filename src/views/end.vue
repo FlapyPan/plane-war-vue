@@ -15,7 +15,7 @@ const restart = () => location.reload()
     <h1 class="end-title">分数:{{ logStore.score }}</h1>
     <p v-if="loading">加载中...</p>
     <button class="end-btn" @click="restart" v-else>重新开始</button>
-    <a class="link" href="https://github.com/FlapyPan/plane-war-vue">项目 Github 地址</a>
+    <a class="link" href="https://github.com/blyrin/plane-war-vue">项目 Github 地址</a>
   </div>
 </template>
 
